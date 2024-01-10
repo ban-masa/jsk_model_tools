@@ -407,7 +407,11 @@ class yamlParser:
     yaml_data = None
 
     def load(self, fname):
-        self.yaml_data = yaml.load(open(fname).read())
+        from packaging import version
+        if version.parse(yaml.__version__) > version.parse('5.4.1'):
+            self.yaml_data = yaml.load(open(fname).read(), Loader=yaml.SafeLoader)
+        else:
+            self.yaml_data = yaml.load(open(fname).read())
 
     def add_sensor(self, xml_obj):
         if 'sensors' in self.yaml_data and self.yaml_data['sensors']:
